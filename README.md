@@ -35,6 +35,8 @@ Initially used color to differentiate, but that didn't go well reaching part 3.
 
 | dynamic hard | 20.8 |
 
+https://drive.google.com/drive/folders/1cs1IytDnpSEQQCskBZJDUged7xJpcVmk?usp=sharing
+
 ## Challenges
 
 - **Otsu thresholding fails here.** It assumes two classes of comparable size.
