@@ -30,7 +30,6 @@ Initially used color to differentiate, but that didn't go well reaching part 3.
 ## Results
 
 | clip | mean FPS |
-|---|---|---|
 
 | dynamic | 21.6 |
 | dynamic hard | 20.8 |
