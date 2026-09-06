@@ -1,10 +1,5 @@
 # PennAiR 2026 Software Challenge
 
-> TEMPLATE. The technical facts below are measured and correct. Everything
-> marked **[WRITE THIS]** needs to be in your own words — those are the parts
-> the reviewers are actually reading for, and the parts you have to be able to
-> defend out loud. Delete this block when you're done.
-
 ## Running it
 
 ```bash
@@ -23,33 +18,23 @@ python measure_constants.py "assets/PennAir 2024 App Dynamic Hard.mp4" --sensiti
 ## Approach
 
 The background is textured and the shapes are smooth, so the mask is built from
-**local variance**, not colour. For each pixel we ask how much the pixels around
+local variance, not color. For each pixel we ask how much the pixels around
 it disagree with each other: low inside a shape, high on grass or asphalt. It is
 computed from two box filters using `Var = E[I²] − E[I]²`, which is O(1) per
 pixel regardless of window size.
 
-Nothing in the pipeline depends on the background being any particular colour,
-which is what makes Part 3 fall out for free rather than needing a separate
-solution.
+Nothing in the pipeline depends on the background being any particular color.
 
-**[WRITE THIS]** — a paragraph on how you arrived at this, what you tried first,
-what you'd do differently.
+Initially used color to differentiate, but that didn't go well reaching part 3.
 
 ## Results
 
-| clip | mean FPS | notes |
+| clip | mean FPS |
 |---|---|---|
-| static image | — | **[FILL IN]** |
-| dynamic | — | **[FILL IN]** |
-| dynamic hard | — | **[FILL IN]** |
-
-Measured on **[YOUR MACHINE]**. Quote the mean, and note the worst-case frame
-separately — it runs several times the mean.
+| dynamic | 21.6 |
+| dynamic hard | 20.8 |
 
 ## Challenges
-
-**[WRITE THIS]** — pick two or three you can actually explain. Candidates, all
-measured:
 
 - **Otsu thresholding fails here.** It assumes two classes of comparable size.
   The shapes are ~5% of pixels while the asphalt spans a wide texture range, so
@@ -58,10 +43,9 @@ measured:
   with a fixed fraction of the frame's median texture, which works because the
   background dominates by area, so its median describes the background.
 
-- **Shapes with internal shading get chopped up.** A shape is busiest exactly
-  where its own shading is steepest, so its shaded corners fail the cutoff.
+- **Shapes with internal shading get chopped up.** A trapezoid has partly blended corners.
   Raising the cutoff cannot fix it because the populations overlap: shape
-  texture p75 is 56 and background p10 is 57. Solved with hysteresis — a loose
+  texture is 56 and background is 57. Solved with hysteresis — a loose
   second threshold, kept only where it touches a strict-threshold seed.
 
 - **A static patch of asphalt was detected in every frame.** One spot at
@@ -80,7 +64,7 @@ Z = f · R / r_px          R = 10 in, r_px = ellipse semi-major axis
 X = (u − cx)·Z/fx    Y = (v − cy)·Z/fy
 ```
 
-Axes are +X right, **+Y down**, +Z forward — the standard camera convention.
+Axes are +X right, +Y down, +Z forward — the standard camera convention.
 
 `K`'s principal point is (0, 0), which would put the optical axis at the sensor
 corner. Substituted the image centre. This changes X and Y only; Z depends
@@ -106,7 +90,6 @@ available on 100% of frames.
 - Constants were measured on the dynamic-hard clip, whose background is a static
   image with shapes composited over it. **[Re-run measure_constants.py on the
   other clips and say whether the values hold.]**
-- **[WRITE THIS]** — anything else you find.
 
 ## Attribution
 
