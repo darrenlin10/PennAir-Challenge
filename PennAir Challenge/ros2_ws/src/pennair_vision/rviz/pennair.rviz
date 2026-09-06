@@ -1,0 +1,40 @@
+Panels:
+  - Class: rviz_common/Displays
+    Name: Displays
+Visualization Manager:
+  Class: ""
+  Fixed Frame: camera_optical_frame
+  Displays:
+    - Class: rviz_default_plugins/Grid
+      Enabled: true
+      Name: Grid
+      Cell Size: 0.5
+      Plane: XY
+    - Class: rviz_default_plugins/MarkerArray
+      Enabled: true
+      Name: Shapes
+      Topic:
+        Value: /shape_detector/markers
+        Depth: 5
+        Reliability Policy: Reliable
+    - Class: rviz_default_plugins/Image
+      Enabled: true
+      Name: Annotated
+      Topic:
+        Value: /shape_detector/image_annotated
+        Depth: 1
+        Reliability Policy: Best Effort
+  Global Options:
+    Background Color: 48; 48; 48
+    Fixed Frame: camera_optical_frame
+  Tools:
+    - Class: rviz_default_plugins/MoveCamera
+  Views:
+    Current:
+      Class: rviz_default_plugins/Orbit
+      Distance: 8
+      Focal Point: {X: 0, Y: 0, Z: 6}
+      Name: Current View
+Window Geometry:
+  Height: 900
+  Width: 1400
