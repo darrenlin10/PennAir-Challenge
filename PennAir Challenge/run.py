@@ -1,16 +1,11 @@
 """
-Harness for the PennAiR software challenge.
+Harness
 
-This file is plumbing only: it loads input, feeds it to your detector one
-frame at a time, draws the results, and writes output. You should not need
-to change much in here. The thinking happens in detector.py.
-
-Usage:
+running:
     python run.py --input path/to/image.png  --output out/static.png
     python run.py --input path/to/video.mp4  --output out/dynamic.mp4
     python run.py --input path/to/video.mp4  --output out/dynamic.mp4 --show
 
-Press q to quit early when using --show.
 """
 
 import argparse
@@ -119,18 +114,12 @@ def process_video(in_path, out_path, show=False):
     n_direct = 0
     n_with_z = 0
 
-    # CHANGED: one tracker per video. detect_shapes() is a pure function of a
+    # Later made fix: one tracker per video. detect_shapes() is a pure function of a
     # single frame, so anything that has to persist between frames lives here,
-    # in the loop that owns the notion of a previous frame. The circle is only
-    # cleanly measurable in about a third of frames on the dynamic clips --
-    # it spends long stretches overlapping another shape -- and the tracker
-    # carries the scene depth across those gaps using the flat-surface
-    # assumption. Without it, most frames report no depth at all.
+    # in the loop that owns the notion of a previous frame.
     tracker = ZPlaneTracker()
 
-    # NOTE: this loop reads and processes ONE frame at a time, which is what
-    # the challenge asks for -- the aircraft does not get the whole video up
-    # front. Do not batch, do not look ahead.
+    # this loop reads and processes one frame at a time
     while True:
         ok, frame = cap.read()
         if not ok:
