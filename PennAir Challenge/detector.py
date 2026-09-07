@@ -57,6 +57,12 @@ TEXTURE_GROW_RATIO = 0.60
 # usual tutorial value of 0.5, which gives up on all but slight overlaps.
 SEED_FRAC = 0.85
 
+# Smallest blob accepted as a shape, as a FRACTION of the frame area. Absolute
+# pixel counts do not transfer between resolutions: the same scene at 960x540
+# has quarter-sized shapes, and a threshold tuned on 1080p then lands in the
+# middle of the real shapes instead of below them.
+MIN_AREA_FRAC = 0.0024113
+
 
 # =============================================================================
 # BUILD THE MASK
@@ -224,11 +230,17 @@ def _split_blob(contour, seed_frac=SEED_FRAC, min_piece_area=500):
 # STEP 2 OF THE PIPELINE: MASK -> LIST OF SHAPES
 # =============================================================================
 
-def mask_to_detections(mask, min_area=5000, min_solidity=0.70, border_margin=3):
+def mask_to_detections(mask, min_area=None, min_solidity=0.70, border_margin=3):
     """Mask -> list of dicts with contour, center, xyz, area, solidity, clipped,
-    was_split. xyz stays None until estimate_xyz() fills it in."""
+    was_split. xyz stays None until estimate_xyz() fills it in.
+
+    min_area defaults to MIN_AREA_FRAC of the frame so it works at any
+    resolution; pass an explicit pixel count to override.
+    """
 
     H, W = mask.shape[:2]
+    if min_area is None:
+        min_area = MIN_AREA_FRAC * H * W
     contours, _ = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 
     detections = []
@@ -359,6 +371,10 @@ def estimate_xyz(detections, image_shape, fx=FX, fy=FY, cx=None, cy=None,
         r = f * R / Z   (similar triangles)  ->  Z = f * R / r
         X = (u - cx) * Z / fx
         Y = (v - cy) * Z / fy
+
+    R is known only for the circle, so it sets the scale; the flat-surface
+    assumption then gives every shape the same Z. Axes are +X right, +Y DOWN,
+    +Z away from the camera. Pass z_plane to supply the depth from outside.
     """
 
     H, W = image_shape[:2]
